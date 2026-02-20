@@ -1050,6 +1050,76 @@
       e.target.reset();
     }, 3000);
   }
+
+  /* ── MOBILE NAV & SCROLL SPY ── */
+  (() => {
+    const navMenu = document.getElementById('nav-menu');
+    const toggle = document.querySelector('.mobile-toggle');
+    const links = navMenu.querySelectorAll('a');
+    
+    toggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+      toggle.textContent = navMenu.classList.contains('active') ? '✕' : '☰';
+    });
+
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        toggle.textContent = '☰';
+      });
+    });
+
+    // Scroll Spy
+    const sections = document.querySelectorAll('section');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (scrollY >= (sectionTop - sectionHeight / 3)) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      links.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').includes(current)) {
+          link.classList.add('active');
+        }
+      });
+    });
+  })();
+
+  /* ── PROJECT FILTERS ── */
+  (() => {
+    const filters = document.querySelectorAll('.filter-btn');
+    const projects = document.querySelectorAll('.project-card');
+
+    filters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Active state
+        filters.forEach(f => f.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+        
+        projects.forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.style.display = 'block';
+            // Slight delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 50);
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
+            setTimeout(() => card.style.display = 'none', 300);
+          }
+        });
+      });
+    });
+  })();
 </script>
 </body>
 </html>
